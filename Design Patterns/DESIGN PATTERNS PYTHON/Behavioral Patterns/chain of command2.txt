@@ -1,0 +1,73 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import Any, Optional
+
+
+class Handler(ABC):
+    #interfata declara metoda pt a contrui lant de responsab
+    #also metoda pt a executa un request
+    @abstractmethod
+    def set_next(self,handler:Handler)->Handler:
+        pass
+    @abstractmethod
+    def handle(self,request)->Optional[str]:
+        pass
+
+class AbstractHandler(Handler):   #sau base handler    
+    #the basic chaining behaviour may be detailed here
+    _next_handler:Handler=None
+    def set_next(self, handler: Handler) -> Handler:
+        self._next_handler=handler
+
+        return handler
+    @abstractmethod
+    def handle(self,request:Any)->str:
+        if self._next_handler:  #daca exista un elem urmator, pasam la el requestul
+            return self._next_handler.handle(request)    
+        return None
+"""
+All Concrete Handlers either handle a request or pass it to the next handler in
+the chain.
+"""
+class ArthurHandler(AbstractHandler):
+    def handle(self,request:Any)->str:
+        if request =="Train Robbery":
+            return f"Arthur Morgan: I do love a {request}"
+        elif request=="Bank Robbery":
+            return f"Arthur Morgan: Of course I'll help with the {request}"
+        else:
+            return super().handle(request)  #passing it along if it can t do it
+class HoseaHandler(AbstractHandler):
+    def handle(self,request:Any)->str:
+        if request=="Con":
+            return f"Hosea: I do love staging a {request}"
+        else:
+            return super().handle(request)
+
+class MicahHandler(AbstractHandler):
+    def handle(self,request):
+        if request=="Stage Coach":
+            return f"I ain'y yella! I'll help with the {request}"
+        else:
+            print("Micah is a coward and a rat\n")
+            return super().handle(request)    
+def client(handler:Handler):
+    for job in ["Con","Bank Robbery","Stage Coach","Train Robbery","Shop Robbery"]:
+        print(f"Who's gonna do a {job} today? \n")
+        result=handler.handle(job)
+        if result:
+            print(f"{result}-> Success\n")
+        else:
+            print("No one Suitable was at camp!")
+
+
+if __name__=="__main__":
+    arthur=ArthurHandler()
+    micah=MicahHandler()
+    hosea=HoseaHandler()
+
+    arthur.set_next(hosea).set_next(micah)
+
+    print("Chain: A.M. -> H.M. M.B\n")
+    client(arthur)
+    print("\n")

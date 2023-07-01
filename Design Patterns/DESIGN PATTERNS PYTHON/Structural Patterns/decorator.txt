@@ -1,0 +1,70 @@
+from abc import ABC, abstractmethod
+
+class DataSource(ABC):
+    #?abstract method?
+    def writeData(self,data):
+        pass
+    def readData(self)->str:
+        pass
+
+class FileDataSource(DataSource):  #concrete component
+    def __init__(self,filename):
+        self.filename=filename
+
+    def writeData(self,data):
+        print(f"Am scris {data} in {self.filename}")
+    def readData(self) -> str:
+        return "Am citit data --- FileDataSource"        
+class DataSourceDecorator(DataSource):  #BASE DECORATOR
+    """ IMPORTANT, DE RETINUT!!!!!"""
+    
+    _wrapee:DataSource=None
+
+    def __init__(self, wrapee:DataSource)->None:
+        self._wrapee=wrapee
+
+    @property
+    def wrapee(self)->DataSource:
+        return self._wrappee    
+    """ IMPORTANT, DE RETIRNUT!!!!"""
+    def writeData(self, data):
+        self._wrapee.writeData(data)
+    def readData(self) -> str:
+        return self.wrapee.readData()    
+        
+class EncryptionDecorator(DataSourceDecorator):
+    def writeData(self, data):
+         print("Acum vom encripta informatia \n")
+         self._wrapee.writeData(data)
+    def readData(self) -> str:
+        return self._wrapee.readData() + "  am decriptat informatia \n"   
+
+class CompressionDecorator(DataSourceDecorator):
+    def writeData(self, data):
+        print("Mai intai vom compresa data")
+        self._wrapee.writeData(data)
+
+    def readData(self) -> str:
+        return self._wrapee.readData() + "Am decompresat informatia " 
+
+def client_code(component:DataSource)->None:
+    data="TEST TEST TEST"
+    print(f"RESULT: {component.writeData(data)}",end="")
+    print(f"RESULT: {component.readData()}",end="")
+    
+
+
+
+
+
+if __name__=="__main__":
+    simple=FileDataSource("text.txt")
+    print(" S I M P L U ")
+    client_code(simple)
+    print("\n")
+    print(" C U   D E C O R A T O R")
+    decorator1=EncryptionDecorator(simple)
+    decorator2=CompressionDecorator(decorator1)  #compress peste encript peste simplu
+    client_code(decorator2)
+
+

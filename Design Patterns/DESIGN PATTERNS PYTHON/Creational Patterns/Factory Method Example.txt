@@ -1,0 +1,87 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+
+
+class Dialog(ABC):
+ 
+
+    @abstractmethod
+    def createButton(self):
+
+        pass
+
+    def render(self)->str:
+        product = self.createButton()
+        rez= f"Am apelat metoda render cu {product.operation()}"
+        return rez
+
+
+        
+       
+
+       
+
+
+
+
+
+class WindowsDialog(Dialog):
+    """
+    Note that the signature of the method still uses the abstract product type,
+    even though the concrete product is actually returned from the method. This
+    way the Dialog can stay independent of concrete product classes.
+    """
+
+    def createButton(self) -> Button:
+        return WindowsButton()
+
+
+class WebDialog(Dialog):
+    def createButton(self) -> Button:
+        return HTMLButton()
+
+
+class Button(ABC):
+    """
+    The Button interface declares the operations that all concrete Buttons
+    must implement.
+    """
+
+    @abstractmethod
+    def operation(self) -> str:
+        pass
+
+
+"""
+Concrete Buttons provide various implementations of the Button interface.
+"""
+
+
+class WindowsButton(Button):
+    def operation(self) -> str:
+        return "{Result of the WindowsButton}"
+
+
+class HTMLButton(Button):
+    def operation(self) -> str:
+        return "{Result of the HTMLButton}"
+
+
+def client_code(Dialog: Dialog) -> None:
+    """
+    The client code works with an instance of a concrete Dialog, albeit through
+    its base interface. As long as the client keeps working with the Dialog via
+    the base interface, you can pass it any Dialog's subclass.
+    """
+
+    print(f"Client: I'm not aware of the Dialog's class, but it still works.\n"
+          f"{Dialog.render()}", end="")
+
+
+if __name__ == "__main__":
+    print("App: Launched with the WindowsDialog.")
+    client_code(WindowsDialog())
+    print("\n")
+
+    print("App: Launched with the ConcreteDialog2.")
+    client_code(WebDialog())

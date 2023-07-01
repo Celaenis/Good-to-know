@@ -1,0 +1,61 @@
+from abc import ABC, abstractmethod
+
+class ThirdPartyYoutubeLib(ABC):
+    def listVideos(self):
+        pass
+    def getVideoInfo(self,id:int):
+        pass
+    def downloadVideo(self,id:int):
+        pass
+
+
+class ThirdPartyYoutubeClass(ThirdPartyYoutubeLib):
+    def listVideos(self):
+        print( "Listing Videos in playlist ..... \n")
+    def getVideoInfo(self, id: int):
+        print(f"Displaying Metadata for video with id {id}\n")
+    def downloadVideo(self, id: int):
+        print(f"Downloading video with id {id}... Please Wait....\n") 
+
+class CachedYoutubeClass(ThirdPartyYoutubeLib):   #the proxy
+    def __init__(self, real_service:ThirdPartyYoutubeClass):
+        self.service=real_service
+
+    def listVideos(self):
+        print("Accesing service... Please Wait.... --PROXY--\n")
+        self.service.listVideos()
+
+    def getVideoInfo(self, id: int):
+         print("Accesing service... Please Wait.... --PROXY--\n")
+         self.service.getVideoInfo(id)
+         print("DONE    ---PROXY---\n")
+
+    def downloadVideo(self, id: int):
+        print("Checking connection....  ---PROXY----\n")
+        self.service.downloadVideo(id) 
+        print("Video Downloaded Successfully\n")
+
+def client(subject: ThirdPartyYoutubeLib):
+    val=int(input("1 --- List videos\n2--Get Video Info\n3--DownloadVideo\nAny number -> all\nYour Option: "))
+    print("\n")
+    if val==1:
+        subject.listVideos()
+    elif val==2:
+        subject.getVideoInfo(4)
+    elif val==3:
+        subject.downloadVideo(454)
+    else:
+        subject.listVideos()
+        subject.getVideoInfo(44)
+        subject.downloadVideo(44)    
+if __name__ == "__main__":
+     print("Client: Executing the client code with a real subject:")
+     real_subject=ThirdPartyYoutubeClass()
+     client(real_subject)
+     print("Client: Executing the same client code with a proxy:")
+     proxy=CachedYoutubeClass(real_subject)
+     client(proxy) 
+
+
+                        
+

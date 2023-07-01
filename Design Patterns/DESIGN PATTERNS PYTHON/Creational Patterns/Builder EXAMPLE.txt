@@ -1,0 +1,144 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import Any
+
+
+
+class Builder(ABC):
+    @property
+    @abstractmethod
+    def product(self) -> None:
+        pass
+
+    @abstractmethod
+    def setSeats(self) -> None:
+        pass
+
+    @abstractmethod
+    def setEngine(self) -> None:
+        pass
+
+    @abstractmethod
+    def setGPS(self) -> None:
+        pass
+    
+class CarBuilder(Builder):
+    def __init__(self)->None:
+        self.reset() 
+#o instanta noua de builder trebuie sa contina un obj blank, care va fi folosit ulterior in asamblare
+    def reset(self)->None:
+        self._product=Car()
+        
+   
+
+    def setSeats(self)->None:
+        self._product.add("Am adaugat rotile.... CarBuilder\n")
+    def setEngine(self)->None:
+        self._product.add("Am Adaugat Motorul .... CarBuilder\n")
+    def setGPS(self)->None:
+        self._product.add("Am Adaugat GPS .... CarBuilder\n")    
+
+    @property
+    def product(self)->Car:   #un fel de getter
+        product=self._product
+        self.reset()
+        return product
+class CarManualBuilder(Builder):
+    def __init__(self)->None:
+        self.reset()
+    def reset(self)->None:
+        self._product=ManualCar()
+
+    def setSeats(self) -> None:
+        self._product.add("Am adaugat Rotile ... Manual Car\n")
+    def setEngine(self)->None:
+        self._product.add("Am Adaugat Motorul .... Manual car\n")
+    def setGPS(self)->None:
+        self._product.add("Am Adaugat GPS .... Manual car\n") 
+    @property
+    def product(self)->ManualCar:
+        product=self._product
+        self.reset()
+        return product             
+
+
+
+
+
+
+
+
+
+
+     
+class Car():
+    def __init__(self)->None:
+        self.parts=[]
+    def add (self,part:Any)->None:
+        self.parts.append(part)
+    def list_parts(self)->None:
+        print(f"Masina (Car) este facuta astfel: {', '.join(self.parts)}", end="")
+
+class ManualCar():
+    def __init__(self)->None:
+        self.parts=[]
+    def add (self,part:Any)->None:
+        self.parts.append(part)
+    def list_parts(self)->None:
+        print(f"Masina (ManualCar) este facuta astfel: {', '.join(self.parts)}", end="")
+        
+class Director:
+    def __init__(self)->None:
+        self._builder=None
+    @property
+    def builder(self)->Builder:  # private filedul ????
+        return self._builder
+    @builder.setter
+    def builder(self,builder:Builder)->None: #aici dam tipul de builder car sau manual car la apel
+        self._builder=builder
+    def build_minimal_car(self) -> None:
+        self.builder.setSeats()
+        self.builder.setEngine()
+
+    def build_cool_car(self) -> None:
+        self.builder.setSeats()
+        self.builder.setEngine()
+        self.builder.setGPS()   
+        
+if __name__ == "__main__":
+    """
+    The client code creates a builder object, passes it to the director and then
+    initiates the construction process. The end result is retrieved from the
+    builder object.
+    """
+
+    director = Director()
+    builder1 = CarBuilder()
+    director.builder = builder1
+
+    print("Standard basic product: ")
+    director.build_minimal_car()
+    builder1.product.list_parts()
+
+    print("\n")
+
+    print("Standard full featured product: ")
+    director.build_cool_car()
+    builder1.product.list_parts()
+
+    print("\n")
+    print("*****MANUAL******")
+    builder2=CarManualBuilder()
+    director.builder=builder2
+    director.build_cool_car()
+    builder1.product.list_parts()
+
+
+    print("\n")
+
+    # Remember, the Builder pattern can be used without a Director class.
+    print("Custom product: ")
+    builder1.setSeats()
+    builder1.setEngine()
+    builder1.product.list_parts()     
+    

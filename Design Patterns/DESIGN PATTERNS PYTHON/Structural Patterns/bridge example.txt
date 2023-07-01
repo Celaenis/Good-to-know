@@ -1,0 +1,95 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from xmlrpc.client import Boolean
+
+
+class RemoteControl :
+    def __init__(self, device:Device):
+        self.device=device
+    def togglePower(self):
+        if self.device.isEnabled():
+            self.device.disable()
+        else:
+            self.device.enable()
+    def volumeDown(self):
+        self.device.setVolume(self.device.getVolume()-10)
+    def volumeUp(self):
+        self.device.setVolume(self.device.getVolume()+10) 
+    def channelDown(self):
+        self.device.setChannel(self.device.getChannel()-1)
+    def channelUp(self):
+        self.device.setChannel(self.device.getChannel()+1)             
+
+class AdvancedRemote(RemoteControl):
+    def __init__(self, device:Device):
+        super().__init__(device)
+
+    def mute(self):
+        self.device.setVolume(0)    
+
+class Device(ABC):
+    def __init__(self,run:Boolean,volume,channle):
+        self.run=run
+        self.volume=volume
+        self.channle=channle
+    
+    def isEnabled(self)-> Boolean:
+        if self.run==True:
+            return True
+        else:
+            return False    
+    
+    def enable(self):
+        self.run=True
+    def disable(self):
+        self.run=False    
+    @abstractmethod
+    def getVolume(self):
+        pass    
+    @abstractmethod
+    def setVolume(self,volume):
+        pass    
+    @abstractmethod
+    def getChannel(self):
+        pass    
+    @abstractmethod
+    def setChannel(self,channel):
+        pass    
+
+class TV(Device):
+    def __init__(self,run:Boolean,volume,channle):
+        super().__init__(run,volume,channle)
+    def setVolume(self, volume):
+        self.volume=volume
+    def setChannel(self, channel):
+        self.channle=channel
+    def getChannel(self):
+        return self.channle
+    def getVolume(self):
+        return self.volume
+class Radio(Device):
+    def __init__(self,run:Boolean,volume,channle):
+        super().__init__(run,volume,channle)
+    def setVolume(self, volume):
+        self.volume=volume
+    def setChannel(self, channel):
+        self.channle=channel
+    def getChannel(self):
+        return self.channle
+    def getVolume(self):
+        return self.volume        
+
+
+if __name__=="__main__":
+    tv= TV(True,20,4)
+    radio=Radio(False,50,102)
+    remote= RemoteControl(tv)
+    remoteadv=AdvancedRemote(radio)
+    remote.togglePower()
+    remote.channelUp()
+    remote.channelUp()
+    remote.volumeUp()
+    print(tv.isEnabled(),tv.getChannel(),tv.getVolume())
+    remoteadv.mute()
+    print(radio.getVolume())    
+                   

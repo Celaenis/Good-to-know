@@ -1,0 +1,76 @@
+from abc import ABC, abstractmethod
+import random
+
+
+class GameAI(ABC):
+    def collectResources(self):
+        print("Basic AI --> Collecting Resources\n")
+
+    @abstractmethod
+    def buildStructures(self,s:int):
+        pass    
+    @abstractmethod
+    def buildUnits(self,s:int):
+        pass
+
+    def attack(self):
+        print("Basic AI --> Attack!")
+    @abstractmethod
+    def sendScouts(self,position:int):
+        pass
+
+    @abstractmethod
+    def sendWorriors(self,position:int):
+        pass
+    def method(self):
+        n=random.randint(0,15)
+        self.collectResources()
+        self.buildStructures(n)
+        self.buildUnits(n)
+        self.sendScouts(n)
+        self.sendWorriors(n)
+        self.attack()    
+
+class OrcAI(GameAI):
+    def buildStructures(self, s: int):
+        if s<=3 and s>0:
+            print("Orcs are building farms\n")
+        elif s>4:
+            print("Orcs are building a stronghold\n")
+    def buildUnits(self,s:int):
+        if s>0 and s<6:
+            print("The Orcs have recruited a new Grunt!\n")
+        elif s>6:
+            print("The Orcs recruited a new scout and a poison mage!\n")
+
+    def sendScouts(self, position: int):
+        print(f"Orcs have sent reconnaissance at location : {position}")   
+    def sendWorriors(self, position: int):
+        print(f"Orcs have sent their main army  at location : {position}")                
+class ElvesAI(GameAI):
+    def buildStructures(self, s: int):
+        if s<=3 and s>0:
+            print("The Elves are building a fortress in the woods!\n")
+        elif s>4:
+            print("The Elves are building a stronghold\n")
+    def buildUnits(self,s:int):
+        if s>0 and s<6:
+            print("The Elves have recruited a new Archer!\n")
+        elif s>6:
+            print("The Elves recruited a battalion of Fire Mages!\n")
+
+    def sendScouts(self, position: int):
+        print(f"Elves have sent reconnaissance at location : {position}")   
+    def sendWorriors(self, position: int):
+        print(f"Elves have sent their units at location : {position}") 
+
+
+def client(abs:GameAI):
+    abs.method()
+
+
+if __name__ == "__main__":
+    print("The Evles and the Ocrs have long been at war with eachother. ")
+    print("Today, that ends.Behold the final battle!\n") 
+    client(OrcAI()) 
+    client(ElvesAI())  

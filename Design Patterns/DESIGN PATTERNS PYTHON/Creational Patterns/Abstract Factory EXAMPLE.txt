@@ -1,0 +1,64 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+
+
+class AbstractFactory(ABC):
+    @abstractmethod
+    def createChair(self)->Chair:
+        pass
+    @abstractmethod
+    def createTable(self)->Table:
+        pass
+    
+class ModernFactory(AbstractFactory):
+    def createChair(self)->Chair:
+        return ModernChair()
+    def createTable(self)->Table:
+        return ModernTable()
+        
+class VictorianFactory(AbstractFactory):
+    def createChair(self)->Chair:
+        return VictorianChair()
+    def createTable(selg)->Table:
+        return VictorianTable()
+        
+class Chair(ABC):
+    @abstractmethod
+    def function_chair(self)->str:
+        pass
+class ModernChair(Chair):
+    def function_chair(self)->str:
+        return "I am MODERN CHAIR"
+        
+class VictorianChair(Chair):
+    def function_chair(self)->str:
+        return "I am VICTORIAN CHAIR"
+        
+class Table(ABC):
+    @abstractmethod
+    def function_table(self)->str:
+        pass
+class ModernTable(Table):
+    def function_table(self)->str:
+        return "I AM MODERN TABLE"
+class VictorianTable(Table):
+    def function_table(self)->str:
+        return "I AM VICTORIAN TABLE" 
+        
+def client_code(factory: AbstractFactory)->None:
+     product_chair = factory.createChair()
+     product_table = factory.createTable()
+     print(f"{product_chair.function_chair()}")
+     print(f"{product_table.function_table()}")
+     
+if __name__ == "__main__":
+    print("Test Tip 1")
+    client_code(ModernFactory())
+    print("\n")
+    print("Test Tip 2")
+    client_code(VictorianFactory())
+    
+    
+        
+        
+    

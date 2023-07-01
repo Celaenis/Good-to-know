@@ -1,0 +1,63 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import List
+
+
+class Context():
+    def __init__(self,strategy:Strategy):
+        self.__strategy=strategy
+
+    @property
+    def strategy(self) -> Strategy:
+        """
+        The Context maintains a reference to one of the Strategy objects. The
+        Context does not know the concrete class of a strategy. It should work
+        with all strategies via the Strategy interface.
+        """
+
+        return self.__strategy
+
+    @strategy.setter
+    def strategy(self, strategy: Strategy) -> None: 
+        return self.__strategy
+
+    def doSomething(self,a:float,b:float)->float:
+        return self.__strategy.execute(a,b)
+
+
+class Strategy(ABC):
+    @abstractmethod
+    def execute(self,a:float,b:float)->float:
+        pass
+
+class SumStrategy(Strategy):
+        def execute(self, a: float, b: float) -> float:
+            r=a+b
+            return r
+class MulStrategy(Strategy):
+    def execute(self, a: float, b: float) -> float:
+        r=a*b
+        return r
+class DivStrategy(Strategy):
+    def execute(self, a: float, b: float) -> float:
+        r=a/b
+        return r   
+
+if __name__=="__main__":
+    a=float(input("Introduceti valoarea numarului a: "))
+    print("\n") 
+    b=float(input("Introduceti valoarea nr b: "))
+    print("\n")
+    al=int(input("Pentru suma --> 1\nPentru produs -->2\nPentru impartire -->3\n"))
+    if al==1:
+        context=Context(SumStrategy())
+        print(context.doSomething(a,b))  
+    elif al==2:
+        context=Context(MulStrategy())
+        print(context.doSomething(a,b)) 
+    elif al==3:
+        context=Context(DivStrategy())
+        print(context.doSomething(a,b)) 
+        
+    elif al!=1 and al!=2 and al!=3:
+        print("Alegerea dumneavoastra este invalida!!")                               

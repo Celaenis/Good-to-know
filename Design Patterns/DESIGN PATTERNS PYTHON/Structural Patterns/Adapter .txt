@@ -1,0 +1,50 @@
+import math
+from operator import truediv
+from xmlrpc.client import Boolean 
+
+
+
+class RoundPeg:
+    def __init__(self,radius):
+        self.radius=radius
+    def getRadius(self):
+         return self.radius
+class RoundHole:
+    def __init__(self,radius):
+        self.radius=radius
+    def getRadius(self)->float:
+         return self.radius
+    def fits(self, _peg:RoundPeg):
+        if self.getRadius() >= _peg.getRadius():
+            print("true\n")
+        else:
+            print("False\n") 
+
+
+class SquarePeg:
+    def __init__(self,width):
+        self.width=width
+    def getWidth(self)->float:
+        return self.width    
+
+class SquarePegAdapter(RoundPeg):
+    def __init__(self, _peg:SquarePeg):
+        self.peg=_peg 
+    def getRadius(self)->float:
+        return self.peg.getWidth()*math.sqrt(2) /2
+def main():
+    hole = RoundHole(5)
+    rpeg= RoundPeg(5)
+    hole.fits(rpeg)
+
+    small_sqpeg= SquarePeg(5)
+    large_sqpeg= SquarePeg(10)
+    #hole.fits(small_sqpeg) #incopatibil
+    small_sqpeg_adapter=SquarePegAdapter(small_sqpeg)
+    large_sqpeg_adapter=SquarePegAdapter(large_sqpeg)
+    hole.fits(small_sqpeg_adapter)
+    hole.fits(large_sqpeg_adapter)
+
+if __name__=="__main__":
+    main()
+

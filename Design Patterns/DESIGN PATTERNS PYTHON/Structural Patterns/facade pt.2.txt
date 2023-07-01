@@ -1,0 +1,56 @@
+from __future__ import annotations
+from re import S
+
+
+class VideoFile:
+    def playVideo(self)->str:
+        return "Playing Video.... "
+    def pauseVideo(self)->str:
+        return "Video is Paused"
+
+class CodeFactory:
+    def typeTest(self)->str:
+        return "Returning Video Format "
+    def changeType(self)->str:
+        return "Changing  video extension"  
+class AudioMixer:
+    def tuneAudio(self)->str:
+        return "Fine Tunning Audio"
+    def xNoise(self)->str:
+        return "Filtering out Noise"
+
+
+class Facade:
+    def __init__(self, v:VideoFile, c:CodeFactory, a:AudioMixer):
+        self.v=v or VideoFile()
+        self.c=c or CodeFactory()
+        self.a=a or AudioMixer
+
+    def makeBetter(self)->str:
+        results=[]
+        results.append("Increasing Quality")
+        results.append(self.a.tuneAudio())
+        results.append(self.a.xNoise())
+        results.append(self.v.playVideo())
+        return "\n".join(results)
+    def convertPlay(self)->str:
+        res=[]
+        res.append("Converting.... ")
+        res.append(self.a.xNoise()) 
+        res.append(self.c.changeType()) 
+        res.append(self.v.playVideo()) 
+        return "\n".join(res)    
+
+def client(facade:Facade)->None:
+    print(facade.makeBetter())
+    print("\n\n")
+    print(facade.convertPlay())
+
+
+if __name__ == "__main__":
+    v=VideoFile()
+    a=AudioMixer()
+    c=CodeFactory()
+    facade=Facade(v,c,a)
+    client(facade) 
+    #facade2=Facade()  
